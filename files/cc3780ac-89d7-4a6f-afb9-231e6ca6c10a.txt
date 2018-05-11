@@ -1,0 +1,66 @@
+#查询账户
+#SELECT * from xtp_user WHERE user_name='105110003176';
+#SELECT * from xtp_secu_info_20180428 WHERE client_id='511001059135';
+#*****************************************************************************************************************************************
+#条数
+SELECT COUNT(*) 条数 FROM xtp_ept_dayorderrec_20180428 WHERE UserName='105110003176'; 
+#查询不重复的订单标识
+#SELECT DISTINCT OriBSFlag FROM `xtp_ept_dayorderrec_20180428` WHERE UserName='105110003176';  
+#******************************************************************************************************************************************
+#买入成交资金
+SELECT (select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 1)+  
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 4)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 41)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 43)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 45)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 48)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 51) as 买入成交资金;
+#卖出成交资金
+SELECT (select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 2)+  
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 5)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 42)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 44)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 46)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 49)+
+(select ifnull(SUM(TnvrAmt),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 52) as 卖出成交资金;
+#*********************************************************************************************************************************************
+#买入成交数量
+SELECT (select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 1)+  
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 4)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 41)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 43)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 45)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 48)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 51) as 买入成交数量;
+#卖出成交数量
+SELECT (select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 2)+  
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 5)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 42)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 44)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 46)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 49)+
+(select ifnull(SUM(TnvrQty),0) FROM xtp_ept_dayorderrec_20180428 WHERE UserName= '105110003176' and BSFlag = 52) as 卖出成交数量;
+#*********************************************************************************************************************************************
+#预扣查询
+#SELECT * from xtp_ept_dayorderrec_20180428 WHERE UserName='105110003176' and OrdStatus IN (1,2,7);
+#注意：除普通用下面语句外，其它直接看表字段计算，因字段已完善
+#预扣结算：相加
+SELECT (SELECT ifnull(sum(WithholdPrice*OrderQty+WithholdFee),0) as '买-未成交'  from xtp_ept_dayorderrec_20180428 WHERE UserName='105110003176' and OrdStatus in(1,2) and OriBSFlag in (1,4,41,43,45,48,51))+
+(SELECT ifnull(sum(WithholdPrice*(OrderQty-TnvrQty)+WithholdFee),0) as '买-部成'  from xtp_ept_dayorderrec_20180428 WHERE UserName='105110003176' and OrdStatus=7 and OriBSFlag in (1,4,41,43,45,48,51))+
+(SELECT IFNULL(SUM(WithholdFee),0) as '卖-部成、未成'  from xtp_ept_dayorderrec_20180428 WHERE UserName='105110003176' and OrdStatus in(1,2,7) and OriBSFlag in (2,5,42,44,46,49,52)) as 预扣;
+#****************************************************************************************************************************************************************************************************
+#限价1、2、3		即时4、5		五转撤41、42		全成全撤43、44		本方45、46		对方48、49		五转限51、52  分级基金申赎34、35  逆回购54
+#导出委托表market：0深圳、1上海；status：2   7    8    9     5/8    6/8  
+SELECT * from xtp_ept_dayorderrec_20180428 WHERE Market=0 and UserName='105110003176' and BSFlag=54 and OrdStatus=6;
+SELECT * from xtp_ept_dayorderrec_20180428 WHERE oriOrderId='JG05fyrX'; 
+#撤单废单，如xtp_ept_dayorderrec_20180428，51， orderID和oriOrderId不一致，分别为：2422000069和2422000032
+SELECT * from xtp_ept_dayorderrec_20180428 WHERE Market=0 and UserName='105110003176' and oriBSFlag=54 and OrdStatus=9; 
+SELECT * from xtp_ept_dayorderrec_20180428 WHERE oriOrderId='JG05fz8O';
+
+
+
+
+
+
+
+
