@@ -9,7 +9,7 @@ DelFilesHandler,FinalDelFilesHandler,RecoveryFilesHandler,FilesDownLoadHandler,F
 
 files_urls = [
     (r'/files/files_list/([1-9]{1,3})', FilesListHandler),  #文件列表
-    (r'/files/files_up_load', FilesUploadHandler),  #文件上传
+    (r'/files/files_up_load', FilesUploadHandler),  #文件上传 #在这个文件中修改上传到七牛还是程序运行的服务器上，/static/js/file/file_upload.js  ，22行和23行这里
     (r'/files/files_up_load_qiniu', FilesUploadQiniuHandler),  #文件上传到七牛
     (r'/files/files_message', FilesMessageHandler), #文件详情
     (r'/files/files_page_list/([1-9]{1,3})', FilesPageListHandler), #文件分页

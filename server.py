@@ -24,8 +24,7 @@ define("u", default=False, help="create user", type=bool)
 
 if __name__ == "__main__":
     options.parse_command_line()
-    if options.t:
-        create_talbes.run()
+    if options.t:        create_talbes.run()
 
     if options.u:
         init_data.init_data()

@@ -19,8 +19,8 @@ $(document).ready(function () {
         console.log('-------------------==================-----------------');
         console.log(formdata);
         $.ajax({
-            // 'url': "/files/files_up_load",
-            'url': "/files/files_up_load_qiniu",
+            'url': "/files/files_up_load",
+            // 'url': "/files/files_up_load_qiniu",
             'type': "POST",
             'data': formdata,
             'headers':{

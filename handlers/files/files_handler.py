@@ -30,7 +30,7 @@ class FilesUploadHandler(BaseHandler):
         result = upload_files_lib(self, upload_files)
         if result is None:
             return self.write({'status': 400, 'msg': '有错误了'})
-        return self.write({'status': 200, 'msg': '有错误了','data': result})
+        return self.write({'status': 200, 'msg': 'ok','data': result})
 
 
 class FilesMessageHandler(BaseHandler):
